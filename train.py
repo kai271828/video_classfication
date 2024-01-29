@@ -165,6 +165,8 @@ def main():
     )
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
+    training_args.remove_unused_columns = False
+
     if model_args.use_auth_token is not None:
         warnings.warn(
             "The `use_auth_token` argument is deprecated and will be removed in v4.34. Please use `token` instead.",
@@ -238,6 +240,10 @@ def main():
         decode_audio=False,
         transform=train_transform,
     )
+
+    training_args.max_steps = (
+        train_dataset.num_videos // training_args.batch_size
+    ) * training_args.num_train_epochs
 
     val_transform = Compose(
         [
