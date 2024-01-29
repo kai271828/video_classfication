@@ -53,24 +53,24 @@ class DataTrainingArguments:
         default=None,
         metadata={"help": "Directory of a dataset."},
     )
-    max_train_samples: Optional[int] = field(
-        default=None,
-        metadata={
-            "help": (
-                "For debugging purposes or quicker training, truncate the number of training examples to this "
-                "value if set."
-            )
-        },
-    )
-    max_eval_samples: Optional[int] = field(
-        default=None,
-        metadata={
-            "help": (
-                "For debugging purposes or quicker training, truncate the number of evaluation examples to this "
-                "value if set."
-            )
-        },
-    )
+    # max_train_samples: Optional[int] = field(
+    #     default=None,
+    #     metadata={
+    #         "help": (
+    #             "For debugging purposes or quicker training, truncate the number of training examples to this "
+    #             "value if set."
+    #         )
+    #     },
+    # )
+    # max_eval_samples: Optional[int] = field(
+    #     default=None,
+    #     metadata={
+    #         "help": (
+    #             "For debugging purposes or quicker training, truncate the number of evaluation examples to this "
+    #             "value if set."
+    #         )
+    #     },
+    # )
     sample_rate: int = field(
         default=4,
         metadata={"help": "clip_duration = num_frames_to_sample * sample_rate / fps."},
