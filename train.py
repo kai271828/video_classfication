@@ -8,6 +8,7 @@ import evaluate
 import torch
 import pytorchvideo.data
 import numpy as np
+from dataclasses import dataclass, field
 from datasets import load_dataset
 from pytorchvideo.transforms import (
     ApplyTransformToKey,
