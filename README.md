@@ -1,4 +1,10 @@
-example
+## install
+
+```
+pip3 install -r requirements.txt
+```
+
+## example
 
 ```
 python3 train.py \
