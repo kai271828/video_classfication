@@ -12,7 +12,7 @@ python3 train.py \
     --eval_steps 50 \
     --learning_rate 5e-5 \
     --per_device_train_batch_size 4 \
-    --per_device_eval_batch_size batch_size \
+    --per_device_eval_batch_size 4 \
     --warmup_ratio 0.1 \
     --logging_steps 10 \
     --load_best_model_at_end True \
