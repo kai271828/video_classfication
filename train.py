@@ -243,7 +243,7 @@ def main():
     )
 
     training_args.max_steps = (
-        train_dataset.num_videos // training_args.batch_size
+        train_dataset.num_videos // training_args.per_device_train_batch_size
     ) * training_args.num_train_epochs
 
     val_transform = Compose(
