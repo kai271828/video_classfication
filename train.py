@@ -179,7 +179,7 @@ def main():
             )
         model_args.token = model_args.use_auth_token
 
-    class_labels = os.listdir(os.path.join(data_args.dataset_name, "train"))
+    class_labels = os.listdir(os.path.join(data_args.dataset_dir, "train"))
     label2id = {label: i for i, label in enumerate(class_labels)}
     id2label = {i: label for label, i in label2id.items()}
 
