@@ -298,8 +298,8 @@ def main():
     )
 
     trainer.save_model()
-    trainer.log_metrics("train", train_result.metrics)
-    trainer.save_metrics("train", train_result.metrics)
+    trainer.log_metrics("train", train_results.metrics)
+    trainer.save_metrics("train", train_results.metrics)
     trainer.save_state()
 
     kwargs = {
