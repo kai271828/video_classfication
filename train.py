@@ -291,6 +291,7 @@ def main():
         tokenizer=image_processor,
         compute_metrics=compute_metrics,
         data_collator=collate_fn,
+        strategy="ddp_find_unused_parameters_false",
     )
 
     train_results = trainer.train(
