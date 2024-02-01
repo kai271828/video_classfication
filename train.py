@@ -50,9 +50,13 @@ class DataTrainingArguments:
     them on the command line.
     """
 
-    dataset_dir: Optional[str] = field(
+    train_dataset_dir: Optional[str] = field(
         default=None,
-        metadata={"help": "Directory of a dataset."},
+        metadata={"help": "Directory of training dataset."},
+    )
+    val_dataset_dir: Optional[str] = field(
+        default=None,
+        metadata={"help": "Directory of validating dataset."},
     )
     # max_train_samples: Optional[int] = field(
     #     default=None,
@@ -84,8 +88,10 @@ class DataTrainingArguments:
     )
 
     def __post_init__(self):
-        if self.dataset_dir is None:
-            raise ValueError("You must specify a dataset directory.")
+        if self.train_dataset_dir is None:
+            raise ValueError("You must specify a training dataset directory.")
+        if self.val_dataset_dir is None:
+            raise ValueError("You must specify a valdating dataset directory.")
 
 
 @dataclass
@@ -179,7 +185,7 @@ def main():
             )
         model_args.token = model_args.use_auth_token
 
-    class_labels = os.listdir(os.path.join(data_args.dataset_dir, "train"))
+    class_labels = os.listdir(data_args.train_dataset_dir)
     label2id = {label: i for i, label in enumerate(class_labels)}
     id2label = {i: label for label, i in label2id.items()}
 
@@ -236,7 +242,7 @@ def main():
     )
 
     train_dataset = pytorchvideo.data.labeled_video_dataset(
-        data_path=os.path.join(data_args.dataset_dir, "train"),
+        data_path=data_args.train_dataset_dir,
         clip_sampler=pytorchvideo.data.make_clip_sampler("random", clip_duration),
         decode_audio=False,
         transform=train_transform,
@@ -263,7 +269,7 @@ def main():
     )
 
     val_dataset = pytorchvideo.data.labeled_video_dataset(
-        data_path=os.path.join(data_args.dataset_dir, "val"),
+        data_path=data_args.val_dataset_dir,
         clip_sampler=pytorchvideo.data.make_clip_sampler("uniform", clip_duration),
         decode_audio=False,
         transform=val_transform,
