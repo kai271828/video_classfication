@@ -8,7 +8,8 @@ pip3 install -r requirements.txt
 
 ```
 python3 train.py \
-    --dataset_dir ./dataset \
+    --train_dataset_dir ./dataset/train \
+    --val_dataset_dir ./dataset/val \
     --sample_rate 4 \
     --model_name_or_path MCG-NJU/videomae-base-finetuned-kinetics \
     --output_dir videomae-base-fatigue-detection \
