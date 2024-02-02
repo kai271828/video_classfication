@@ -207,7 +207,7 @@ def main():
     else:
         val_path = data_args.val_dataset_dir
 
-    class_labels = os.listdir(train_path)
+    class_labels = sorted(os.listdir(train_path))
     label2id = {label: i for i, label in enumerate(class_labels)}
     id2label = {i: label for label, i in label2id.items()}
 
