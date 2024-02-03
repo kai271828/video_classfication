@@ -230,12 +230,6 @@ def main():
         transform=val_transform,
     )
 
-    def count_mp4_files(directory):
-        mp4_files = glob.glob(os.path.join(directory, "**/*.mp4"), recursive=True)
-        num_mp4_files = len(mp4_files)
-
-        return num_mp4_files
-
     test_iter = iter(test_dataset)
     test_len = count_mp4_files(test_path)
     predictions = []
@@ -245,7 +239,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
-    for sample in tqdm(test_iter, total=test_len):
+    for sample in tqdm(test_iter, total=test_dataset.num_videos):
         print(f"Inferencing {sample['label']}/{sample['video_name']}.")
         video, label = sample["video"], sample["label"]
         perumuted_video = video.permute(1, 0, 2, 3)
