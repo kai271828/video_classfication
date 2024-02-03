@@ -80,6 +80,10 @@ class DataTrainingArguments:
         default=None,
         metadata={"help": "Maximum svaluating samples."},
     )
+    batch_size: int = field(
+        default=1,
+        metadata={"help": "Batch size for evaluating."},
+    )
 
     def __post_init__(self):
         if (
@@ -235,7 +239,21 @@ def main():
         transform=val_transform,
     )
 
-    test_iter = iter(test_dataset)
+    def collate_fn(examples):
+        # permute to (num_frames, num_channels, height, width)
+        pixel_values = torch.stack(
+            [example["video"].permute(1, 0, 2, 3) for example in examples]
+        )
+        labels = torch.tensor([example["label"] for example in examples])
+        return {"pixel_values": pixel_values, "labels": labels}
+
+    # test_iter = iter(test_dataset)
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset,
+        batch_size=data_args.batch_size,
+        collate_fn=collate_fn,
+    )
+
     predictions = []
     labels = []
     errors = []
@@ -244,33 +262,32 @@ def main():
     model = model.to(device)
 
     progress_bar = tqdm(
-        test_iter,
+        test_loader,
         total=(
             data_args.max_eval_samples
             if data_args.max_eval_samples is not None
-            else test_dataset.num_videos * 10 // clip_duration
+            else test_dataset.num_videos * 10 // (clip_duration * data_args.batch_size)
         ),
     )
 
-    for idx, sample in enumerate(progress_bar):
-        video, label = sample["video"], sample["label"]
-        perumuted_video = video.permute(1, 0, 2, 3)
+    for idx, batch in enumerate(progress_bar):
+        label = batch["labels"].numpy().tolist()
+        labels.extend(label)
 
-        inputs = {"pixel_values": perumuted_video.unsqueeze(0).to(device)}
+        inputs = {"pixel_values": batch["pixel_values"].to("cuda")}
 
-        progress_bar.set_postfix(
-            custom_info=f"Inferencing {label}/{sample['video_name']}."
-        )
+        # progress_bar.set_postfix(
+        #     custom_info=f"Inferencing {label}/{sample['video_name']}."
+        # )
 
         with torch.no_grad():
             outputs = model(**inputs)
             logits = outputs.logits
-            pred = logits.argmax(-1).item()
-            predictions.append(pred)
-            labels.append(label)
+            pred = logits.argmax(-1).to("cpu").numpy().tolist()
+            predictions.extend(pred)
 
-            if pred != label:
-                errors.append(f"{label}/{sample['video_name']}")
+            # if pred != label:
+            #     errors.append(f"{label}/{sample['video_name']}")
         gc.collect()
         if data_args.max_eval_samples is not None and idx >= data_args.max_eval_samples:
             break
