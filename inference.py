@@ -231,7 +231,6 @@ def main():
     )
 
     test_iter = iter(test_dataset)
-    test_len = count_mp4_files(test_path)
     predictions = []
     labels = []
     errors = []
@@ -240,11 +239,12 @@ def main():
     model = model.to(device)
 
     for sample in tqdm(test_iter, total=test_dataset.num_videos):
-        print(f"Inferencing {sample['label']}/{sample['video_name']}.")
         video, label = sample["video"], sample["label"]
         perumuted_video = video.permute(1, 0, 2, 3)
 
         inputs = {"pixel_values": perumuted_video.unsqueeze(0).to(device)}
+
+        print(f"Inferencing {label}/{sample['video_name']}.")
 
         with torch.no_grad():
             outputs = model(**inputs)
@@ -254,7 +254,7 @@ def main():
             labels.append(label)
 
             if pred != label:
-                errors.append(sample["video_name"])
+                errors.append(f"{label}/{sample['video_name']}")
 
     print(f"Accuracy: {accuracy_score(labels, predictions)}")
     print(f"F1 : {f1_score(labels, predictions, average=None)}")
