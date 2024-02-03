@@ -246,6 +246,7 @@ def main():
     model = model.to(device)
 
     for sample in tqdm(test_iter, total=test_len):
+        print(f"Inferencing {sample['video_name']}.")
         video, label = sample["video"], sample["label"]
         perumuted_video = video.permute(1, 0, 2, 3)
 
