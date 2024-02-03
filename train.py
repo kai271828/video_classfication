@@ -1,5 +1,5 @@
 import os
-import random
+import gc
 import warnings
 from typing import Optional
 
@@ -172,6 +172,15 @@ class ModelArguments:
     )
 
 
+class CustomTrainer(Trainer):
+    def training_step(self, model, inputs):
+        loss = super().training_step(model, inputs)
+
+        gc.collect()
+
+        return loss
+
+
 def main():
     parser = HfArgumentParser(
         (ModelArguments, DataTrainingArguments, TrainingArguments)
@@ -305,7 +314,7 @@ def main():
         labels = torch.tensor([example["label"] for example in examples])
         return {"pixel_values": pixel_values, "labels": labels}
 
-    trainer = Trainer(
+    trainer = CustomTrainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
