@@ -3,13 +3,11 @@ import random
 import warnings
 from typing import Optional
 
-import datasets
 import evaluate
 import torch
 import pytorchvideo.data
 import numpy as np
 from dataclasses import dataclass, field
-from datasets import load_dataset
 from pytorchvideo.transforms import (
     ApplyTransformToKey,
     Normalize,
@@ -31,13 +29,9 @@ import transformers
 from transformers import (
     AutoImageProcessor,
     AutoModelForVideoClassification,
-    DataCollatorWithPadding,
-    EvalPrediction,
     HfArgumentParser,
-    PretrainedConfig,
     Trainer,
     TrainingArguments,
-    default_data_collator,
     set_seed,
 )
 
@@ -197,15 +191,15 @@ def main():
             )
         model_args.token = model_args.use_auth_token
 
-    if data_args.train_dataset_dir is None:
-        train_path = os.path.join(data_args.dataset_dir, "train")
-    else:
+    if data_args.train_dataset_dir is not None:
         train_path = data_args.train_dataset_dir
-
-    if data_args.val_dataset_dir is None:
-        val_path = os.path.join(data_args.dataset_dir, "val")
     else:
+        train_path = os.path.join(data_args.dataset_dir, "train")
+
+    if data_args.val_dataset_dir is not None:
         val_path = data_args.val_dataset_dir
+    else:
+        val_path = os.path.join(data_args.dataset_dir, "val")
 
     class_labels = sorted(os.listdir(train_path))
     label2id = {label: i for i, label in enumerate(class_labels)}

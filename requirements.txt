@@ -7,3 +7,5 @@ accelerate
 datasets
 scikit-learn
 evaluate
+decord
+tqm
