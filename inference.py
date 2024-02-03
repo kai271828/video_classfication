@@ -238,13 +238,17 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
-    for sample in tqdm(test_iter, total=test_dataset.num_videos):
+    progress_bar = tqdm(test_iter, total=test_dataset.num_videos)
+
+    for sample in progress_bar:
         video, label = sample["video"], sample["label"]
         perumuted_video = video.permute(1, 0, 2, 3)
 
         inputs = {"pixel_values": perumuted_video.unsqueeze(0).to(device)}
 
-        tqdm.set_postfix(custom_info=f"Inferencing {label}/{sample['video_name']}.")
+        progress_bar.set_postfix(
+            custom_info=f"Inferencing {label}/{sample['video_name']}."
+        )
 
         with torch.no_grad():
             outputs = model(**inputs)
