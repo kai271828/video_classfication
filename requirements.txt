@@ -8,4 +8,4 @@ datasets
 scikit-learn
 evaluate
 decord
-tqm
+tqdm
