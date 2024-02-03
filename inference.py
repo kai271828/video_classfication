@@ -245,7 +245,7 @@ def main():
     model = model.to(device)
 
     for sample in tqdm(test_iter, total=test_len):
-        video, label = sample["video"], sample["video"]
+        video, label = sample["video"], sample["label"]
         perumuted_video = video.permute(1, 0, 2, 3)
 
         inputs = {"pixel_values": perumuted_video.unsqueeze(0).to(device)}
