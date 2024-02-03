@@ -230,8 +230,14 @@ def main():
         transform=val_transform,
     )
 
+    def count_mp4_files(directory):
+        mp4_files = glob.glob(os.path.join(directory, "**/*.mp4"), recursive=True)
+        num_mp4_files = len(mp4_files)
+
+        return num_mp4_files
+
     test_iter = iter(test_dataset)
-    test_len = sum(1 for _ in test_iter)
+    test_len = count_mp4_files(test_path)
     predictions = []
     labels = []
 
