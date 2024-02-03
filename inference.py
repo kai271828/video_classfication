@@ -240,6 +240,7 @@ def main():
     test_len = count_mp4_files(test_path)
     predictions = []
     labels = []
+    errors = []
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
@@ -257,9 +258,13 @@ def main():
             predictions.append(pred)
             labels.append(label)
 
+            if pred != label:
+                errors.append(sample["video_name"])
+
     print(f"Accuracy: {accuracy_score(labels, predictions)}")
     print(f"F1 : {f1_score(labels, predictions, average=None)}")
     print(f"Average Precision: {average_precision_score(labels, predictions)}")
+    print(f"error_list: {errors}")
 
 
 if __name__ == "__main__":
