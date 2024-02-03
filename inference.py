@@ -76,6 +76,10 @@ class DataTrainingArguments:
             "help": "FPS of testing data, clip_duration = num_frames_to_sample * sample_rate / fps."
         },
     )
+    max_eval_samples = field(
+        default=None,
+        metadata={"help": "Maximum svaluating samples."},
+    )
 
     def __post_init__(self):
         if (
@@ -239,9 +243,16 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
-    progress_bar = tqdm(test_iter, total=test_dataset.num_videos * 10 // clip_duration)
+    progress_bar = tqdm(
+        test_iter,
+        total=(
+            data_args.max_eval_samples
+            if data_args.max_eval_samples is not None
+            else test_dataset.num_videos * 10 // clip_duration
+        ),
+    )
 
-    for sample in progress_bar:
+    for idx, sample in enumerate(progress_bar):
         video, label = sample["video"], sample["label"]
         perumuted_video = video.permute(1, 0, 2, 3)
 
@@ -261,6 +272,8 @@ def main():
             if pred != label:
                 errors.append(f"{label}/{sample['video_name']}")
         gc.collect()
+        if data_args.max_eval_samples is not None and idx >= data_args.max_eval_samples:
+            break
 
     print(f"Accuracy: {accuracy_score(labels, predictions)}")
     print(f"F1 : {f1_score(labels, predictions, average=None)}")
