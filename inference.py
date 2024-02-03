@@ -1,5 +1,6 @@
 import os
 import glob
+import gc
 from typing import Optional
 
 import torch
@@ -238,7 +239,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
-    progress_bar = tqdm(test_iter, total=test_dataset.num_videos)
+    progress_bar = tqdm(test_iter, total=test_dataset.num_videos * 10 // clip_duration)
 
     for sample in progress_bar:
         video, label = sample["video"], sample["label"]
@@ -259,6 +260,7 @@ def main():
 
             if pred != label:
                 errors.append(f"{label}/{sample['video_name']}")
+        gc.collect()
 
     print(f"Accuracy: {accuracy_score(labels, predictions)}")
     print(f"F1 : {f1_score(labels, predictions, average=None)}")
