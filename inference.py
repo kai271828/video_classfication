@@ -244,7 +244,7 @@ def main():
 
         inputs = {"pixel_values": perumuted_video.unsqueeze(0).to(device)}
 
-        print(f"Inferencing {label}/{sample['video_name']}.")
+        tqdm.write(f"Inferencing {label}/{sample['video_name']}.")
 
         with torch.no_grad():
             outputs = model(**inputs)
