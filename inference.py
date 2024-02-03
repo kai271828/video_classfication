@@ -166,7 +166,7 @@ def main():
         pipe = pipeline(model=model_args.model_name_or_path)
         print(pipe(data_args.test_video_path))
         return
-    elif data_args.test_dataset_dir is None:
+    elif data_args.test_dataset_dir is not None:
         test_path = data_args.test_dataset_dir
     else:
         test_path = os.path.join(data_args.dataset_dir, "test")
