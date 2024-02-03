@@ -164,7 +164,7 @@ def main():
 
     if data_args.test_video_path is not None:
         pipe = pipeline(model=model_args.model_name_or_path)
-        pipe(data_args.test_video_path)
+        print(pipe(data_args.test_video_path))
         return
     elif data_args.test_dataset_dir is None:
         test_path = data_args.test_dataset_dir
