@@ -294,8 +294,7 @@ def main():
 
     print(f"Accuracy: {accuracy_score(labels, predictions)}")
     print(f"F1 : {f1_score(labels, predictions, average=None)}")
-    print(f"Average Precision: {average_precision_score(labels, predictions)}")
-    print(f"error_list: {errors}")
+    # print(f"error_list: {errors}")
 
 
 if __name__ == "__main__":
