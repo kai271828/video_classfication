@@ -76,7 +76,7 @@ class DataTrainingArguments:
             "help": "FPS of testing data, clip_duration = num_frames_to_sample * sample_rate / fps."
         },
     )
-    max_eval_samples: int = field(
+    max_eval_samples: Optional[int] = field(
         default=None,
         metadata={"help": "Maximum svaluating samples."},
     )
